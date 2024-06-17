@@ -17,6 +17,7 @@ export default function Home() {
   const [randomGreens, setRandomGreens] = useState({});
   const [randomReds, setRandomReds] = useState({});
   const [randomYellows, setRandomYellows] = useState({});
+  const [combinedItemsWithImages, setCombinedItemsWithImages] = useState({});
   const [randomBlues, setRandomBlues] = useState({});
   const [randomOranges, setRandomOranges] = useState({});
   const [randomPurples, setRandomPurples] = useState({});
@@ -247,7 +248,13 @@ export default function Home() {
     const redsCount = values.reds;
     const yellowsCount = values.yellows;
 
-    const connectedOranges = Object.keys(orangeItemsWithImages).concat(Object.keys(blueOrangeItemsWithImages));
+    const combined = {
+      ...orangeItemsWithImages,
+      ...blueOrangeItemsWithImages,
+    };
+
+    setCombinedItemsWithImages(combined)
+
     let bluesCount = values.blues;
     const purplesCount = values.purples;
 
@@ -256,7 +263,7 @@ export default function Home() {
     const selectedReds = getRandomItems(Object.keys(redItemsWithImages), redsCount);
     const selectedYellows = getRandomItems(Object.keys(yellowItemsWithImages), yellowsCount);
 
-    const selectedOranges = values.oranges ? getRandomItems(Object.keys(orangeItemsWithImages), 1) : {};
+    const selectedOranges = values.oranges ? getRandomItems(Object.keys(combined), 1) : {};
 
     const includesAny = (arr: any, values: any) => values.some((v: any) => arr.includes(v));
 
@@ -276,6 +283,8 @@ export default function Home() {
     setRandomBlues(selectedBlues);
     setRandomOranges(selectedOranges);
     setRandomPurples(selectedPurples);
+
+    console.log(combinedItemsWithImages)
   };
   
   // I have no fucking idea what this interface
@@ -286,23 +295,28 @@ export default function Home() {
     color: string;
   }
   
-  const ItemDisplay: React.FC<ItemDisplayProps> = ({ items, itemImages, color }) => (
-    <div>
-      <h3 className="text-center">{`${color} Items:`}</h3>
-      <div className="flex justify-center flex-row">
-        {Object.entries(items).map(([itemName, count]) => (
-          <div key={itemName}>
-            <img
-              src={itemImages[itemName as keyof typeof itemImages]}
-              alt={itemName}
-              style={{ width: "80px", height: "80px", objectFit: "cover" }}
-            />
-            <span>{`x${count}`}</span>
-          </div>
-        ))}
+  const ItemDisplay: React.FC<ItemDisplayProps> = ({ items, itemImages, color }) => {
+    // Check if there are any items to display
+    const hasItems = Object.keys(items).length > 0;
+  
+    return (
+      <div>
+        {hasItems ? <h3 className="text-center">{`${color} Items:`}</h3> : ""}
+        <div className="flex justify-center flex-row">
+          {Object.entries(items).map(([itemName, count]) => (
+            <div key={itemName}>
+              <img
+                src={itemImages[itemName as keyof typeof itemImages]}
+                alt={itemName}
+                style={{ width: "80px", height: "80px", objectFit: "cover" }}
+              />
+              <span>{`x${count}`}</span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="flex justify-center items-center flex-col ">
@@ -417,7 +431,7 @@ export default function Home() {
         />
         <ItemDisplay
           items={randomOranges}
-          itemImages={orangeItemsWithImages}
+          itemImages={combinedItemsWithImages}
           color="Orange"
         />
       </div>
