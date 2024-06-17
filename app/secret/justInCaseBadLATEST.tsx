@@ -21,7 +21,7 @@ export default function Home() {
   const [randomOranges, setRandomOranges] = useState({});
   const [randomPurples, setRandomPurples] = useState({});
 
-    const whiteItemsWithImages = {
+  const whiteItemsWithImages = {
     "Armor-Piercing Rounds": "https://ror2.nikurasu.org/img/bossDamage.jpg",
     "Backup Magazine": "https://ror2.nikurasu.org/img/backupMag.jpg",
     "Bundle of Fireworks": "https://ror2.nikurasu.org/img/steak.jpg",
@@ -205,8 +205,6 @@ export default function Home() {
         "Voidsent Flame": "https://ror2.nikurasu.org/img/flame.jpg",
         "Weeping Fungus": "https://ror2.nikurasu.org/img/weirdShroom.jpg"
     };
-    
-
   function handleChange(event: any) {
     const { name, value, type, checked } = event.target;
     setValues((prevValues) => ({
@@ -216,30 +214,19 @@ export default function Home() {
   }
 
   function getRandomItems(arr: string[], n: number) {
-    const numberOfUniqueItems = Math.floor(Math.random() * 10) + 1; // Random number from 1 to 10
     const result: { [key: string]: number } = {};
-    const uniqueItems: string[] = [];
-  
-    while (n > 0) {
+    while (n--) {
       const item = arr[Math.floor(Math.random() * arr.length)];
-  
-      if (!result[item]) {
-        if (uniqueItems.length < numberOfUniqueItems) {
-          uniqueItems.push(item);
-          result[item] = 1;
-          n--;
-        }
-      } else {
+      if (result[item]) {
         result[item]++;
-        n--;
+      } else {
+        result[item] = 1;
       }
     }
-  
     return result;
   }
-  
 
-  const handleSubmit = (event: any) => {
+   const handleSubmit = (event: any) => {
     event.preventDefault();
 
     const whitesCount = values.whites;
